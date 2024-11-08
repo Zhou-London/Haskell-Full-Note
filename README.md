@@ -1,27 +1,29 @@
 # Haskell Learning Notes
+
 Written by Zhou, UG CS Student at UCL
 Reference: Miran Lipovaca, Learn you a Haskell for great good.
+
 # 1.Principles
 
 0. Compile/Run
 
-	ghci //Enter ghci
-	ghci> :l your_program_name //Load the source file
-	ghci> your_program_name parameter //Play with the function you have written in source file
-	:quit //Leave ghci
+		ghci //Enter ghci
+		ghci> :l your_program_name //Load the source file
+		ghci> your_program_name parameter //Play with the function you have written in source file
+		:quit //Leave ghci
 
 1. Parenthesis doesn't mean the parameter but the priority of execution of functions
 
 2. To call function: Function name + space + parameter
 
-	sum [1,2,3,4,5]
+		sum [1,2,3,4,5]
 
 3. If-sentence: "else" is mandatory. Can use "()" in a long expression
 
 4. Function can not start with uppercase
 
-	Hello xs = ... //Not allowed
-	hello xs = ... //Fine
+		Hello xs = ... //Not allowed
+		hello xs = ... //Fine
 
 5. What means "Definition"?: Function who does NOT take any parameter
 
