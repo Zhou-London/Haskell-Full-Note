@@ -11,3 +11,5 @@ length' xs = sum [1 |  _ <-xs]
 removeLower xs = [x|x<-xs, x `elem` ['A'..'Z'] ]
 
 findTriangle = [(a,b,c) | c <-[1..10], b<-[1..c], a<-[1..b], a^2 + b^2 == c^2, a+b+c == 24]
+
+findSum xs = [a+b | (a,b) <- xs]
