@@ -5,6 +5,26 @@ Reference: Miran Lipovaca, Learn you a Haskell for great good.
 
 # 1.Principles
 
+## Environment/Code editor
+
+install ghci
+
+		sudo apt -install ghci
+		//I don't really remember this
+
+Professor uses vim
+
+		sudo apt -install vim
+
+Vscode as well
+
+		sudo apt -install code
+		//I don't really like it for haskell
+
+
+
+
+
 ## Compile/Run
 
 		ghci //Enter ghci
