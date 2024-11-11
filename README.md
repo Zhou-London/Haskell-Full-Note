@@ -212,9 +212,11 @@ Multiple constriants
 	ghci> let "abcDEF"
 	"abc"
 
-Nested List Comprehension
+Nested List Comprehension. Can be considered as an outer loop and an inner loop.
 
-	ghci> 
+	ghci> [[1,3,5,2,3,1,2,4,5],[1,2,3,4,5,6,7,8,9],[1,2,4,2,1,6,3,1,3,2,3,6]]
+	ghci> [ [ x | x <- xs, even x ] | xs <- xxs]
+	[[2,2,4],[2,4,6,8],[2,4,2,6,2,6]]
 
 
 
