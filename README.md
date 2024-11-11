@@ -5,6 +5,8 @@ Reference: Miran Lipovaca, Learn you a Haskell for great good.
 
 # 1.Principles
 
+Haskell is a Parallel Computation Language which is widely used by FaceBook and Tesla.
+
 ## Environment/Code editor
 
 install ghci
@@ -20,10 +22,6 @@ Vscode as well
 
 		sudo apt -install code
 		//I don't really like it for haskell
-
-
-
-
 
 ## Compile/Run
 
@@ -101,24 +99,27 @@ The Pattern Matching in List Comprehension
 
 		//See section List before reading this part
 		findSum xs = [a+b | (a,b) <- xs] //We want the individual value of a and b so specify them
+
 		ghci> findSum [(1,2), (3,4)]
-		ghci> [3,7]
+		[3,7]
 
 The Pattern Matching in List Operation
 
 		//See section List before reading this part
 		head' :: [a] -> [a]
 		head' [a:_] = [a] //Specify the first element and leave the rest elements unspecified
+
 		ghci> head' "Hello"
-		ghci> "H"
+		"H"
 
 		tell :: [a] -> (Show a) => [a] -> String
 		tell [] = "No element" //Specify there is only one element which is a "\0"
 		tell (a:[]) = "One element" //Specify there are two elements, a value and then a "\0"
 		tell (a:b:[]) = "Two element" //Specify there are three elememnts, two value and then a "\0"
 		tell (a:b:_) = "More than 3 element" //Only specify the first two elements and leaves the rest unspecified 
+
 		ghci> tell [1,2]
-		ghci> "Two element"
+		"Two element"
 
 
 ## Recursion
@@ -130,38 +131,72 @@ Recursion can be implemented through Pattern Matching
 		factorial x = x * factorial (x-1) //general case
 
 # 2.Lists
-## 2.(1)Lists-Feature:
+
+Lists in Haskell
+
+## 2.(1)Features and Operations:
+
 Store the same type(for all dimensions)
+
+	ghci> let ls = [1,2,3,4]
 
 Use ":" to extend a string
 
 	ghci> 1:[2,3]
-	ghci> [1,2,3]
+	[1,2,3]
 
 Just like C, String is ended with a "\0", written as "[]"
 
-	[1,2,3] == 1:2:3:[] //returns True
+	ghci> 1:2:3:[]
+	[1,2,3]
 
 Lists can be compared between the first different element
 
+	ghci> [1,2,3] < [2,3,4] 
+	True
+
 Float is not precise in a range
 
-## 2.(2)List-Operation:
+	ghci> [1.1,1.2..10]
+
+Use "!!" to index
+
+	ghci> [1,2,3] !! 0
+	1
+
+Use "++" to fix two lists or strings
+
+	ghci> [1,2,3] ++ [4,5,6]
+	[1,2,3,4,5,6]
+
+![alt text](image.png)
+
 Mutiple dimensions array
 
-	[[1,2,3], [4,5,6]]
+	ghci> [[1,2,3], [4,5,6]]
 
-Compare
+	ghci> [[6,6],[1,2,3,4],[99]]
 
-	[3,2,1] > [3,1,1]
 
-Range
+Use Range to generate value quickly
 
-	[2,4..20] //returns [2,4,6,8,10..20]
-	[20,18..1] //returns [20,18,16,14,12,10...]
+	ghci> [2,4..20]
+	[2,4,6,8,10..20]
 
-### 2.(3)List comprehension:
-[x|x <- [50..100], x `mod` 7 == 3] returns [52,59,66,73,80,87,84]
+	ghci> [20,18..1]
+	[20,18,16,14,12,10...]
+
+Use take to cut a list
+
+	ghci> take 2 [2,4..20]
+	[2,4]
+
+### 2.(2)List comprehension:
+
+Basic principle
+
+	ghci> [x|x <- [50..100], x `mod` 7 == 3]
+	[52,59,66,73,80,87,84]
 
 Can be combined with function
 
@@ -171,96 +206,176 @@ For two lists
 
 	[x operator y| x <-[...], y<-[...]]
 
+Multiple constriants
+
+	ghci> let function xs = [x | x <-xs, x `elem`['a'..'z']]
+	ghci> let "abcDEF"
+	"abc"
+
+Nested List Comprehension
+
+	ghci> 
+
+
+
 ### Tuples in list:
+
 Fromed by "()", (1,2)...
 
-	[(x,y) | x<-(1..10), y<-(1..10)>]
+	ghci> [(x,y) | x <-[1,2,3], y <- [1,2,3]]
+	[(1,1),(1,2),(1,3),(2,1),(2,2),(2,3),(3,1),(3,2),(3,3)]
 
 Tuples and Tripes can NOT be existed in one list
 
+	[(1,2), (2,3,4)] //Error
+	[(1,2),(3,4)] //Compiled
+
 Tuples are much more rigid because each different size of tuple is its own type
+
+	[[1,2],[3,4]] //less rigid
+	[(1,2),(3,4)] //More rigid
 		   	   
+Elements in Tuples can be heterogenous
+
+	ghci> ("Hi",1,2)
+	("Hi",1,2)
 
 # 3. Command/Function/Operator:
 
+Useful command, functions and operators in Haskell
+
 ## 3.(1) General
+
 let: define functions in GHCI rather than in the source file
 
-	let x = [1,2,3]
+	ghci> let x = [1,2,3]
 
 :t : takes a value, returns the type
 
-	:t x //returns int
+	ghci> :t 1
+	1 :: Num p => p
 
 "++": Connnects two lists or strings
 
+	ghci> "hello" ++ "world"
+	"helloworld"
+
 ":": Prepends one element to a string or list
 
-	3:[4,5] //return[3,4,5]
+	ghci> 3:[4,5]
+	[3,4,5]
 
 "!!": Find the element at this indice
 
+	ghci> "hello" !! 1
+	"e"
+
 "/=": Not equal to
+
+	ghci> 1 /= 2
+	True
 
 read: takes a string, returns any possible type of value
 
+	ghci> read "1" + 2
+	3
+
 fromIntegral: takes a int, returns a int/float/double value
 
-	fromIntegral (length [1,2,3,4]) + 3.2
-	//returns 7.2 because 3.2 is float
+	ghci> fromIntegral (length [1,2,3,4]) + 3.2
+	7.2 //because 3.2 is float
 
 ## 3.(2) List/String/Tuples
+
 head: takes a list, returns the first element of a list
 
-	head x //returns 1
+	ghci> head [1,2,3]
+	1
 
 tail: takes a list, return the rest elements of a list
 
+	ghci> head [1,2,3]
+	[2,3]
+
 last: takes a list, return the last element of a list
+
+	ghci> last [1,2,3]
+	3
 
 init: takes a list, return every element but the last element of a list
 
+	ghci> init [1,2,3,4,5]
+	[1,2,3,4]
+
 length: takes a list, return the length of a list
+
+	ghci> length [1,2,3]
+	3
 
 null: takes a list, check whether a list is empty
 
-	null x //returns false
+	ghci> null [1,2,3]
+	ghci> True
 
 reverse: takes list, returns a reversed list
 
+	ghci> reverse [1,2,3]
+	ghci> [3,2,1]
+
 take: takes an int and a list, return the first int element of a list
 
-	take 10 [1..10] //returns 1,2,3,4,5,6,7,8,9,10
+	ghci> take 10 [1..10]
+	1,2,3,4,5,6,7,8,9,10
 
 drop: takes an int and a list, return except the first int element of a list
 
-	drop 5 [1..10] //6,7,8,9,10
+	ghci> drop 5 [1..10]
+	6,7,8,9,10
 
 cycle: takes a list and repeat it, combined with take
 	
-	take 10(cycle [1,2,3]) //returns [1,2,3,1,2,3,1,2,3,1]
+	ghci> take 10(cycle [1,2,3])
+	[1,2,3,1,2,3,1,2,3,1]
 
 repeat: Same as cycle but only takes one element
 
+	ghci> take 10 (repeat 1)
+	[1,1,1,1,1,1,1,1,1,1]
+
 maximum/minimum: takes a list, return the max or min value in a list
+
+	ghci> maximum [2,3,4]
+	4
 
 sum: takes a list, return the sum of a list
 
+	ghci> sum [1,2,3]
+	6
+
 product: takes a list, return the product of a list
+
+	ghci> product [10,10,10]
+	1000
 
 elem: takes a value, check whether the element is inside the array
 
-	4 `elem` [3,4,5,6] //returns True
+	ghci> 4 `elem` [3,4,5,6]
+	True
 
 fst: takes a tuple, return the first element
 
-	fst (2,3) //returns 2
+	ghci> fst (2,3)
+	2
 
 snd: takes a tuple, return the second element
 
+	ghci> snd (2,3)
+	3
+
 zip: takes two lists, join them together as one list of tuples
 
-	zip [1..]["Orange", "Apple", "Banana"]
+	ghci> zip [1..]["Orange", "Apple", "Banana"]
+	[(1,"Orange"),(2,"Apple"),(3,"Banana")]
 
 
 # 4.Type
@@ -283,19 +398,34 @@ Type can be ignored when declaring the function
 
 Not like the class in OOP
 
+	//Not like this...
+	class Cat{
+	private:
+		name;
+	public:
+		Cat(string n): name(n) {}
+		string print_name(){
+			std::cout << name << "\n";
+		}
+	};
+
 More like a big dictionary, kind of a constriant on the parameter
 
+	ghci> :t (==)
 	(==) :: (Eq a) => a -> a -> Bool
-	//(Eq a) => means it can be any type but in the Eq class
+
+	// "(Eq a) =>" means it can be any type but in the Eq class
 	//a is type variable
 	//takes two parameter in Eq class and returns a Boolean value
 
 Alongside Eq, Ord is another type class
 
+	ghci> :t (>)
 	(>) :: (Eq a) => a -> a -> Bool
 
 Read class
 
+	ghci> :t read
 	read :: (Read a) => string -> a
 	//Takes a string and return the corresponding type in Read class
 
@@ -306,14 +436,14 @@ Enum class contains all the type that can be ranged
 
 Num class
 
-
+	[1..10] //int
+	[1.1,1.2,10] //float
 
 ## Type annotations
 
 Declare the type of the return value
 
 	//read takes a string and returns any possible type
-	//If you don't use Type annotations you errored
 	ghci> read "5" :: int
 	5
 	ghci> read "5" :: float
