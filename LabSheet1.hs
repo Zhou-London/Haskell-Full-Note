@@ -25,7 +25,7 @@ countPositives :: (Integral a) => [a]->a
 countPositives xs = sum [1| x<- xs, x > 0]
 
 capitalised :: String -> String
-capitalised xs = [if xs !! 0 == x then toUpper x else toLower x | x<-xs]
+capitalised xs = [if i == 0 then toUpper x else toLower x | (i,x) <- zip [0..]xs]
 
 title :: [String] -> [String]
 title xs = [if ((length x) > 3 || xs !! 0 == x) then capitalised x else [toLower a| a<-x] | x<- xs]
