@@ -4,7 +4,6 @@ Written by Zhou, UG CS Student at UCL
 Reference: Miran Lipovaca, Learn you a Haskell for great good.
 
 # 1.Principles
-
 Haskell is a Parallel Computation Language which is widely used by FaceBook and Tesla.
 
 ## Environment/Code editor
