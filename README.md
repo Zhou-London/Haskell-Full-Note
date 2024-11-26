@@ -246,11 +246,7 @@ Brainstorm: What's the meaning of this function?
 		foldr(:) [] xs
 		//No change, just return the exact xs
 
-
-
-
 ![alt text](image-1.png)
-
 
 ## Higher-Order Function
 
@@ -461,6 +457,16 @@ read: takes a string, returns any possible type of value
 
 	ghci> read "1" + 2
 	3
+
+".": Merge two functions
+
+	f (g x)
+	f . g x
+
+"$": Wait for the completion of right expression
+
+	1 + (1 * 2)
+	1 + $ 1 * 2
 
 fromIntegral: takes a int, returns a int/float/double value
 
@@ -676,3 +682,135 @@ Some functions can be declared while being called
 	ghci> read "5" :: float
 	5.0
 
+## User-Defind Data type
+
+Learn how to define a data type
+
+### Redefinition of existed data type
+
+Rename an existed data type
+
+	type String = [Char]
+
+keyword "type" can be used to simpilify a data type, for instance, a tuple of int
+
+	type Pos = (int,int)
+
+	origin:: Pos
+	origin = (0,0)
+
+"type" can have parameter, it is just a type not a constructor
+
+	type Pair a = (a,a)
+
+	copy:: a -> Pair a
+	copy x = (x,x)
+
+### Define completely new data type
+
+keyword "data" is used to implement Data Declarations, which can specify the values of a new data type
+
+	data Bool = False | True
+	//Bool is a new type with value False or True
+
+Type and constructor name must start with a Upper-case letter
+
+	data Bool = False | True //compiles
+	data bool = false | true //error
+
+Such type can be used in the same way as bulit-in types
+
+	data Answer = Yes | No | Unknown
+
+	flip::Answer -> Answer
+	flip Yes = No
+	flip No = Yes
+	flip Unknown = Unknown
+
+Class hierarchy
+
+	data Shape = Circle Float | Rect Float Float
+	//Shape can be etiher Circle with one parameter or Rect with two parameters
+
+	area :: Shape -> Float
+
+	area Circle r = pi * r * r
+	//Contruct a circle and calculate its area
+
+	area Rect x y = x * y
+	//Construct a rectangle and calculate its area
+
+Circle and Rect can be viwed as the Constructors in modern programming language
+
+	class Circle{
+	private:
+		int r;
+	public:
+		Circle(int r): r(r) {}
+
+		Circle getCr(int r){
+			Circle cr = Circle(r);
+			return cr;
+		}
+
+	};
+
+	//getCr is the Same as Circle r in haskell
+
+Data declarations can have parameter
+
+	data Maybe a = Nothing | Just a
+	//If there is an input then we can take it, if not then we can leave it empty
+
+	safeHead :: [a] -> Maybe a
+	safeHead[] = Nothing
+	safeHead xs = Just(head xs)
+
+### Recursive Types
+
+Types can be recursive, say, be defined by its own
+
+	data Nat :: Zero | Succ Nat
+	//Nat is a Set of natural number, from Zero to positive infinite
+
+Use recursive types to convert between Nat and Int
+
+	nat2int :: Nat -> Int
+	nat2int Zero = 0
+	nat2int (Succ n) = 1 + nat2int n
+
+	int2nat :: Int -> Nat
+	int2nat 0 = Zero
+	int2nat n = Succ (int2nat (n-1))
+
+Use recursive types to add two Nats
+
+	add :: Nat->Nat->Nat
+	add Zero n = n
+	add (Succ m) n = Succ (add m n)
+	// (m + 1) + n = + 1 + (m+n)
+
+Use recursive types to multiple two Nats
+
+	mul :; Nat ->Nat ->Nat
+	mul Zero _ = Zero
+	mul (Succ m) n = add n (mul m n)
+	// (m+1) * n = n + (m*n)
+
+### Get together: Implementation of Binary Tree
+
+Using haskell, a binary tree can be much eaiser to be implemented. First, delcare the Tree type
+
+	data Tree = leaf a
+				| Node (Tree a ) a (Tree a)
+	//Can be either leaf, or node surrounded by either other nodes or tree
+
+Try using the tree
+
+	t :: Tree Int
+	t = Node (leaf 2) 1 (leaf 3)
+	//A little tree with only 3 elements
+
+
+
+	
