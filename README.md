@@ -3,7 +3,7 @@
 Written by Zhou, UG CS Student at UCL
 Reference: Miran Lipovaca, Learn you a Haskell for great good.
 
-# 1.Principles
+# 1.Gets start!
 Haskell is a Parallel Computation Language which is widely used by FaceBook and Tesla.
 
 ## Environment/Code editor
@@ -11,7 +11,6 @@ Haskell is a Parallel Computation Language which is widely used by FaceBook and 
 install ghci
 
 		sudo apt -install ghci
-		//I don't really remember this
 
 Professor uses vim
 
@@ -20,16 +19,15 @@ Professor uses vim
 Vscode as well
 
 		sudo apt -install code
-		//I don't really like it for haskell
 
 ## Compile/Run
 
-		ghci //Enter ghci
-		ghci> :l your_program_name //Load the source file
-		ghci> your_program_name parameter //Play with the function you have written in source file
-		:quit //Leave ghci
+		ghci --Enter ghci
+		ghci> :l your_program_name --Load the source file
+		ghci> your_program_name parameter --Play with the function you have written in source file
+		:q --Leave ghci
 
-## Basic
+## Call Function
 
 Parenthesis doesn't mean the parameter but the priority of execution of functions
 
@@ -74,243 +72,11 @@ Curried Convention stands for the function takes more than one argument at a tim
 		mult x y z = x*y*z
 		//Can be considered as (((mult x) y) z)
 
-## Lambda Expression
-
-A function which can be called without a name is called Lambda Expression
-
-		\x -> x+1
-
-This function takes a number x and returns a value equals to x + 1. To call this function:
-
-		ghci> (\x->x+1) 5
-		6
-
-Gives a formal meaning to these functions that are defined using currying
-
-		add x y = x + y
-		add = \x -> (\y -> x + y)
-
-Useful to define functions that return function
-
-		//Simple way
-		compose f g x = f(g x)
-
-		//Lambda Expression, more nature
-		compose f g = \x -> f(g x)
-
-
-
-## Pattern Matching
-
-In C, if we want to check whether the input number is 7
-
-		int check(int a){
-			if(a == 7){
-				return 1;
-			}
-			return 0;
-		}
-
-In Haskell, we can use Pattern Matching to do that
-
-		check :: (Integral a) => a -> String
-		check 7 = "That is!" //specify what would happen at 7
-		check x = "No"
-
-You can consider it as a case sentence as well
-
-		sayyou :: (Integral a) => a -> String
-		sayyou 1 = "sayme" //specify what would happen at 1
-		sayyou 2 = "say it always"
-		sayyou 3 = "the way it should be"
-		sayyou x = "sayme"
-
-The "else" pattern must be at the bottom
-
-		sayyou x = "sayme"
-
-The Pattern Matching is, to specify the part of the function we want and use it.
-
-The Pattern Matching in tuples
-
-		third :: (a,b,c) -> c
-		third (_,_,c) -> c //Use _ means we don't care and won't use that parameter
-		//We want c, so only specify c and then use it
-
-		addTwo :: (Integral a) => (a,a) -> (a,a) -> (a,a)
-		addTwo (x,y) (x2,y2) = (x+x2, y+y2)
-		//We want the individual value so specify them
-
-The Pattern Matching in List Comprehension
-
-		findSum xs = [a+b | (a,b) <- xs] //We want the individual value of a and b so specify them
-
-		ghci> findSum [(1,2), (3,4)]
-		[3,7]
-
-The Pattern Matching in List Operation
-
-		head' :: [a] -> [a]
-		head' [a:_] = [a] //Specify the first element and leave the rest elements unspecified
-
-		ghci> head' "Hello"
-		"H"
-
-		tell :: [a] -> (Show a) => [a] -> String
-		tell [] = "No element"
-		tell (a:[]) = "One element"
-		tell (a:b:[]) = "Two element"
-		tell (a:b:_) = "More than 3 element" //Only specify the first two elements and leaves the rest unspecified 
-
-		ghci> tell [1,2]
-		"Two element"
-
-
-## Recursion
-
-Recursion can be implemented through Pattern Matching
-
-		factorial :: (Integral a) => a -> a
-		factorial 0 = 1 //base case
-		factorial x = x * factorial (x-1) //general case
-
-What happened?
-
-		factorial 3
-		= 3 * factorial 2
-		= 3 * (2 * factorial 1)
-		= 3 * (2 * (1 * factorial 0))
-		= 3 * (2 * (1 * 1))
-		= 3 * (2 * 1)
-		= 3 * 2
-		= 6
-
-Implementation of quick sort
-
-		qsort :: (Num a) => [a] -> [a]
-		qsort x:xs = qsort[a | a <- xs, a <= x]
-					 ++ x ++
-					 qsort[b | b <- xs, b > x]
-					 
-		//Try implement this using C++
-
-Implementation of function sum
-
-		sum[] = 0
-		sum(x:xs) = x + sum xs
-
-		//Using foldr (fold right)
-		sum = foldr(+)0
-
-Implementation of function product
-
-		product[] = 1
-		product(x:xs) = x * product xs
-
-		//Using foldr
-		product = foldr(*)1
-
-Implementation of function and
-
-		and[] = True
-		and(x:xs) = x && add xs
-
-		//Using foldr
-		and = foldr(&&)True
-
-Implementation of foldr
-
-		foldr::(a->b->b) ->b ->[a] ->b
-
-		//"?" is an operation like +, -, *, /
-		foldr (?) v[] = v
-		foldr (?) v(x:xs) = x ? foldr (?) v xs
-
-Principle of Recursion is to change the operation ":" to another operation, For instance
-
-		sum[123]
-		=foldr(+)0 [1:(2:(3:[]))]
-		=1 + foldr(+)0(2:(3:[]))
-		=1 + (2 + foldr(+)0(3:[]))
-		=1 + (2 +(3 + foldr(+)0[]))
-
-More Complex Recursion function, a function that sums up the square of the positive numbers in a list
-
-		f :: [Int] -> Int
-		f[] = 0
-		f(x:xs) | x>0 = (x*x) + f xs //if x > 0 then return...
-				| otherwise = f xs
-
-Brainstorm: What's the meaning of this function?
-
-		foldr(:) [] xs
-		//No change, just return the exact xs
-
-![alt text](image-1.png)
-
-## Higher-Order Function
-
-Function that takes another function as parameter, for instance, function map 
-
-		ghci> map(+1)[1,3,5,7]
-		[2,4,6,8]
-
-Implementation of function map
-
-		map :: (a->b) ->[a] ->[b]
-		//(a->b) stands for taking a function
-
-		//List comprehension method
-		map f xs = [f x|x <- xs]
-
-		//Recursion method
-		map f[] = [] //Pattern matching
-		map f(x:xs) = f x:map f xs
-
-Function filter
-
-		filter::(a->Bool) -> [a] -> [a]
-		ghci> filter even [1..10]
-		[2,4,6,8,10]
-
-Implementation of function filter
-
-		//List comprehension method
-		filter p xs = [x|x<-xs, p x]
-
-		//Recursion method
-		filter p[] = []
-		filter p (x:xs)
-		|p x = x:filter p xs
-		|otherwise = filter p xs
-
-Combined with recursion
-
-		f :: [Int] -> Int
-		f xs = foldr(+)0 (map sqr (filter pos xs))
-				where
-					sqr x = x*x
-					pos x = x>0
-
-More complex example, find the largest number under 100,000 that's divisible by 3829
-
-		findLargest :: (Integral a) => a
-		findLargest = head(filter p[1..100000])
-			where
-				p x = x `mod` 3829 == 0
-
-Brainstorm: Fold an operation into a list
-
-		foldrl :: (a->a->a) -> [a] ->a
-		foldrl f [x] = x
-		foldrl f [x:xs] = f x (foldrl f xs)
-
-
 # 2.Lists
 
 Lists in Haskell
 
-## 2.(1)Features and Operations:
+## Lists' Features and Operations:
 
 Store the same type(for all dimensions)
 
@@ -367,7 +133,7 @@ Use take to cut a list
 	ghci> take 2 [2,4..20]
 	[2,4]
 
-### 2.(2)List comprehension:
+## List comprehension:
 
 Basic principle
 
@@ -396,7 +162,7 @@ Nested List Comprehension. Can be considered as an outer loop and an inner loop.
 
 
 
-### Tuples in list:
+## Tuples in list:
 
 Fromed by "()", (1,2)...
 
@@ -418,11 +184,16 @@ Elements in Tuples can be heterogenous
 	ghci> ("Hi",1,2)
 	("Hi",1,2)
 
+
+
+
+
+
 # 3. Command/Function/Operator:
 
 Useful command, functions and operators in Haskell
 
-## 3.(1) General
+## General
 
 let: define functions in GHCI rather than in the source file
 
@@ -473,7 +244,7 @@ fromIntegral: takes a int, returns a int/float/double value
 	ghci> fromIntegral (length [1,2,3,4]) + 3.2
 	7.2 //because 3.2 is float
 
-## 3.(2) List/String/Tuples
+## List/String/Tuples
 
 head: takes a list, returns the first element of a list
 
@@ -598,7 +369,7 @@ function "length" returns the length of any list, no matter which type of this l
 
 Type variables is used when a variable doesn't necessarily need a determined type
 
-	length :: [a] -> Int //Use a to replace the type name as We don't care what type it is.
+	length :: [a] -> Int --Use a to replace the type name as We don't care what type it is.
 
 Another instance, function "fst", the tuple can be of any type
 
@@ -636,7 +407,7 @@ Eq class (Types that can be equal to each other)
 	ghci> :t (==)
 
 	(==) :: (Eq a) => a -> a -> Bool
-	//a can be of type in class "Eq"
+	--a can be of type in class "Eq"
 
 Ord class (Types that can be ordered)
 
@@ -649,21 +420,21 @@ Read class (Types that can be read)
 	ghci> :t read
 
 	read :: (Read a) => string -> a
-	//a only needs to be of any type inside class "Read"
+	--a only needs to be of any type inside class "Read"
 
 Enum class (Types that can be ranged)
 
-	['A'..'D'] //character is in Enum class
-	[1..10] //int is in Enum class
+	['A'..'D'] --character is in Enum class
+	[1..10] --int is in Enum class
 
 Num class
 
-	[1..10] //int
-	[1.1,1.2,10] //float
+	[1..10] --int
+	[1.1,1.2,10] --float
 
 Show class
 
-	['A'..'D'] //Types that can be showed
+	['A'..'D'] --Types that can be showed
 
 ## Static Types
 
@@ -682,11 +453,276 @@ Some functions can be declared while being called
 	ghci> read "5" :: float
 	5.0
 
-## User-Defind Data type
+# 5.Partial Function
+
+In haskell, many operations are implemented by paritial function.For instance, the operation "+"
+
+	A + B + C
+	first add A(B)
+	then add B(C)
+	then add C()
+	--There is only one "+", A+B+C is treated as (A+B) + C
+
+Becuase of the paritial function, for a function of infinite length, for instance,
+
+	[1,2..]
+
+if you are trying to use "fold" on it, foldr is the correct function rather than foldl
+
+	foldr (+) [1,2..] 0 --Compiled
+	foldl .. --Error
+
+
+## Lambda Expression
+
+A function which can be called without a name is called Lambda Expression
+
+	\x -> x+1
+
+This function takes a number x and returns a value equals to x + 1. To call this function:
+
+	ghci> (\x->x+1) 5
+	6
+
+Gives a formal meaning to these functions that are defined using currying
+
+	add x y = x + y
+	add = \x -> (\y -> x + y)
+
+Useful to define functions that return function
+
+	--Simple way
+	compose f g x = f(g x)
+
+	--Lambda Expression, more nature
+	compose f g = \x -> f(g x)
+
+
+
+# 6.Pattern Matching
+
+In C, if we want to check whether the input number is 7
+
+	int check(int a){
+		if(a == 7){
+			return 1;
+		}
+		return 0;
+	}
+
+In Haskell, we can use Pattern Matching to do that
+
+	check :: (Integral a) => a -> String
+	check 7 = "That is!" --specify what would happen at 7
+	check x = "No"
+
+You can consider it as a case sentence as well
+
+	sayyou :: (Integral a) => a -> String
+	sayyou 1 = "sayme" --specify what would happen at 1
+	sayyou 2 = "say it always"
+	sayyou 3 = "the way it should be"
+	sayyou x = "sayme"
+
+The "else" pattern must be at the bottom
+
+	sayyou x = "sayme"
+
+The Pattern Matching is, to specify the part of the function we want and use it.
+
+The Pattern Matching in tuples
+
+	third :: (a,b,c) -> c
+	third (_,_,c) -> c --Use _ means we don't care and won't use that parameter
+	--We want c, so only specify c and then use it
+
+	addTwo :: (Integral a) => (a,a) -> (a,a) -> (a,a)
+	addTwo (x,y) (x2,y2) = (x+x2, y+y2)
+	--We want the individual value so specify them
+
+The Pattern Matching in List Comprehension
+
+	findSum xs = [a+b | (a,b) <- xs] --We want the individual value of a and b so specify them
+
+	ghci> findSum [(1,2), (3,4)]
+	[3,7]
+
+The Pattern Matching in List Operation
+
+	head' :: [a] -> [a]
+	head' [a:_] = [a] --Specify the first element and leave the rest elements unspecified
+
+	ghci> head' "Hello"
+	"H"
+
+	tell :: [a] -> (Show a) => [a] -> String
+	tell [] = "No element"
+	tell (a:[]) = "One element"
+	tell (a:b:[]) = "Two element"
+	tell (a:b:_) = "More than 3 element" --Only specify the first two elements and leaves the rest unspecified 
+
+	ghci> tell [1,2]
+	"Two element"
+
+
+# 7.Recursion
+
+Recursion can be implemented through Pattern Matching
+
+	factorial :: (Integral a) => a -> a
+	factorial 0 = 1 --base case
+	factorial x = x * factorial (x-1) --general case
+
+What happened?
+
+	factorial 3
+	= 3 * factorial 2
+	= 3 * (2 * factorial 1)
+	= 3 * (2 * (1 * factorial 0))
+	= 3 * (2 * (1 * 1))
+	= 3 * (2 * 1)
+	= 3 * 2
+	= 6
+
+Implementation of quick sort
+
+	qsort :: (Num a) => [a] -> [a]
+	qsort x:xs = qsort[a | a <- xs, a <= x]
+					++ x ++
+					qsort[b | b <- xs, b > x]
+					
+	--Try implement this using C++
+
+Implementation of function sum
+
+	sum[] = 0
+	sum(x:xs) = x + sum xs
+
+	--Using foldr (fold right)
+	sum = foldr(+)0
+
+Implementation of function product
+
+	product[] = 1
+	product(x:xs) = x * product xs
+
+	--Using foldr
+	product = foldr(*)1
+
+Implementation of function and
+
+	and[] = True
+	and(x:xs) = x && add xs
+
+	--Using foldr
+	and = foldr(&&)True
+
+Implementation of foldr
+
+	foldr::(a->b->b) ->b ->[a] ->b
+
+	--"?" is an operation like +, -, *, /
+	foldr (?) v[] = v
+	foldr (?) v(x:xs) = x ? foldr (?) v xs
+
+Principle of Recursion is to change the operation ":" to another operation, For instance
+
+	sum[123]
+	=foldr(+)0 [1:(2:(3:[]))]
+	=1 + foldr(+)0(2:(3:[]))
+	=1 + (2 + foldr(+)0(3:[]))
+	=1 + (2 +(3 + foldr(+)0[]))
+
+More Complex Recursion function, a function that sums up the square of the positive numbers in a list
+
+	f :: [Int] -> Int
+	f[] = 0
+	f(x:xs) | x>0 = (x*x) + f xs --if x > 0 then return...
+			| otherwise = f xs
+
+Brainstorm: What's the meaning of this function?
+
+	foldr(:) [] xs
+	--No change, just return the exact xs
+
+Tail Recursive & Non-Tail Recursive
+
+	factorial (n, acc) --Tail recursive
+	factorial (1), acc = 1 * 2 * 3
+	factorial (2), acc = 1 * 2
+	factorial (3), acc = 1
+
+	factorial (1) = 1 --Non-tail recursive
+	factorial (2) = 2 * factorial (1)
+	factorial (3) = 3 * factorial (2)
+
+![alt text](image-1.png)
+
+# 8.Higher-Order Function
+
+Function that takes another function as parameter, for instance, function map 
+
+	ghci> map(+1)[1,3,5,7]
+	[2,4,6,8]
+
+Implementation of function map
+
+	map :: (a->b) ->[a] ->[b]
+	--(a->b) stands for taking a function
+
+	--List comprehension method
+	map f xs = [f x|x <- xs]
+
+	--Recursion method
+	map f[] = [] //base case
+	map f(x:xs) = f x:map f xs --general case
+
+	--Recursion with Lambda expression
+	map f = foldr(\x acc -> f x : acc) []
+
+Function filter
+
+	filter::(a->Bool) -> [a] -> [a]
+	ghci> filter even [1..10]
+	[2,4,6,8,10]
+
+Implementation of function filter
+
+	--List comprehension method
+	filter p xs = [x|x<-xs, p x]
+
+	--Recursion method
+	filter p[] = []
+	filter p (x:xs)
+	|p x = x:filter p xs
+	|otherwise = filter p xs
+
+Combined with recursion
+
+	f :: [Int] -> Int
+	f xs = foldr(+)0 (map sqr (filter pos xs))
+			where
+				sqr x = x*x
+				pos x = x>0
+
+More complex example, find the largest number under 100,000 that's divisible by 3829
+
+	findLargest :: (Integral a) => a
+	findLargest = head(filter p[1..100000])
+		where
+			p x = x `mod` 3829 == 0
+
+Implementation of foldr
+
+	foldr :: (a->b->b) -> b -> [a] ->b
+	foldr f [x] = x
+	foldr f [x:xs] = f x (foldrl f xs)
+
+# 9.User-Defind Data type
 
 Learn how to define a data type
 
-### Redefinition of existed data type
+## Redefinition of existed data type
 
 Rename an existed data type
 
@@ -706,17 +742,17 @@ keyword "type" can be used to simpilify a data type, for instance, a tuple of in
 	copy:: a -> Pair a
 	copy x = (x,x)
 
-### Define completely new data type
+## Define completely new data type
 
 keyword "data" is used to implement Data Declarations, which can specify the values of a new data type
 
 	data Bool = False | True
-	//Bool is a new type with value False or True
+	--Bool is a new type with value False or True
 
 Type and constructor name must start with a Upper-case letter
 
-	data Bool = False | True //compiles
-	data bool = false | true //error
+	data Bool = False | True --compiles
+	data bool = false | true --error
 
 Such type can be used in the same way as bulit-in types
 
@@ -730,15 +766,15 @@ Such type can be used in the same way as bulit-in types
 Class hierarchy
 
 	data Shape = Circle Float | Rect Float Float
-	//Shape can be etiher Circle with one parameter or Rect with two parameters
+	--Shape can be etiher Circle with one parameter or Rect with two parameters
 
 	area :: Shape -> Float
 
 	area Circle r = pi * r * r
-	//Contruct a circle and calculate its area
+	--Contruct a circle and calculate its area
 
 	area Rect x y = x * y
-	//Construct a rectangle and calculate its area
+	--Construct a rectangle and calculate its area
 
 Circle and Rect can be viwed as the Constructors in modern programming language
 
@@ -760,18 +796,18 @@ Circle and Rect can be viwed as the Constructors in modern programming language
 Data declarations can have parameter
 
 	data Maybe a = Nothing | Just a
-	//If there is an input then we can take it, if not then we can leave it empty
+	--If there is an input then we can take it, if not then we can leave it empty
 
 	safeHead :: [a] -> Maybe a
 	safeHead[] = Nothing
 	safeHead xs = Just(head xs)
 
-### Recursive Types
+## Recursive Types
 
 Types can be recursive, say, be defined by its own
 
 	data Nat :: Zero | Succ Nat
-	//Nat is a Set of natural number, from Zero to positive infinite
+	--Nat is a Set of natural number, from Zero to positive infinite
 
 Use recursive types to convert between Nat and Int
 
@@ -788,29 +824,26 @@ Use recursive types to add two Nats
 	add :: Nat->Nat->Nat
 	add Zero n = n
 	add (Succ m) n = Succ (add m n)
-	// (m + 1) + n = + 1 + (m+n)
+	-- (m + 1) + n = + 1 + (m+n)
 
 Use recursive types to multiple two Nats
 
-	mul :; Nat ->Nat ->Nat
+	mul ::Nat ->Nat ->Nat
 	mul Zero _ = Zero
 	mul (Succ m) n = add n (mul m n)
-	// (m+1) * n = n + (m*n)
+	-- (m+1) * n = n + (m*n)
 
-### Get together: Implementation of Binary Tree
+## Get together: Implementation of Binary Tree
 
 Using haskell, a binary tree can be much eaiser to be implemented. First, delcare the Tree type
 
 	data Tree = leaf a
 				| Node (Tree a ) a (Tree a)
-	//Can be either leaf, or node surrounded by either other nodes or tree
+	--Can be either leaf, or node surrounded by either other nodes or tree
 
 Try using the tree
 
 	t :: Tree Int
 	t = Node (leaf 2) 1 (leaf 3)
-	//A little tree with only 3 elements
+	--A little tree with only 3 elements
 
-
-
-	
