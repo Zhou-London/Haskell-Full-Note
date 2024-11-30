@@ -4,28 +4,49 @@ Written by Zhou, UG CS Student at UCL
 Reference: Miran Lipovaca, Learn you a Haskell for great good.
 
 # 1.Gets start!
-Haskell is a Parallel Computation Language which is widely used by FaceBook and Tesla.
+
+Haskell is a Parallel Computation Language which is widely used by FaceBook and Tesla. It is purely functional and static. You will start a journey of nightmare
+if you have learned other modern programming language before...
 
 ## Environment/Code editor
 
+let's start configuring the Environment
+
+### Linux(WSL as well, strongly recommended)
+
 install ghci
 
-		sudo apt -install ghci
+	sudo apt -install ghci
 
 Professor uses vim
 
-		sudo apt -install vim
+	sudo apt -install vim
 
 Vscode as well
 
-		sudo apt -install code
+	sudo apt -install code
+
+### Windows
+
+install ghci
+
+	Set-ExecutionPolicy Bypass -Scope Process -Force;[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; try { & ([ScriptBlock]::Create((Invoke-WebRequest https://www.haskell.org/ghcup/sh/bootstrap-haskell.ps1 -UseBasicParsing))) -Interactive -DisableCurl } catch { Write-Error $_ }
+
+install vim (add to the path manually)
+
+	winget install vim.vim
+
+install Vscode
+
+	winget install code
 
 ## Compile/Run
 
-		ghci --Enter ghci
-		ghci> :l your_program_name --Load the source file
-		ghci> your_program_name parameter --Play with the function you have written in source file
-		:q --Leave ghci
+	PS> ghci --Enter ghci
+	ghci> :l your_program_name --Load the source file
+	ghci> your_program_name parameter --Play with the function you have written in source file
+	ghci> :q --Leave ghci
+	PS> 
 
 ## Call Function
 
@@ -39,8 +60,8 @@ To call function: Function name + space + parameter
 
 Function can not start with uppercase
 
-		Hello xs = ... //Not allowed
-		hello xs = ... //Fine
+		Hello xs = ... --Not allowed
+		hello xs = ... --Fine
 
 ## If-sentence
 
@@ -58,19 +79,19 @@ Guarded equations: Similiar to "switch" in C++ and "case" in Python
 
 Function can be declared like this
 
-		addThree :: Int -> Int -> Int -> Int
-		addThree x y z = x + y + z
+	addThree :: Int -> Int -> Int -> Int
+	addThree x y z = x + y + z
 
 Curried Function stands for the function takes one argument at a time. First take x then return, then take y and return.
 
-		addTwo :: Int -> (Int -> Int)
-		addTwo x y = x + y
+	addTwo :: Int -> (Int -> Int)
+	addTwo x y = x + y
 
 Curried Convention stands for the function takes more than one argument at a time
 
-		mult :: Int -> Int -> Int -> Int
-		mult x y z = x*y*z
-		//Can be considered as (((mult x) y) z)
+	mult :: Int -> Int -> Int -> Int
+	mult x y z = x*y*z
+	--Can be considered as (((mult x) y) z)
 
 # 2.Lists
 
@@ -171,13 +192,13 @@ Fromed by "()", (1,2)...
 
 Tuples and Tripes can NOT be existed in one list
 
-	[(1,2), (2,3,4)] //Error
-	[(1,2),(3,4)] //Compiled
+	[(1,2), (2,3,4)] --Error
+	[(1,2),(3,4)] --Compiled
 
 Tuples are much more rigid because each different size of tuple is its own type
 
-	[[1,2],[3,4]] //less rigid
-	[(1,2),(3,4)] //More rigid
+	[[1,2],[3,4]] --less rigid
+	[(1,2),(3,4)] --More rigid
 		   	   
 Elements in Tuples can be heterogenous
 
@@ -455,23 +476,59 @@ Some functions can be declared while being called
 
 # 5.Partial Function
 
-In haskell, many operations are implemented by paritial function.For instance, the operation "+"
+In haskell, every function takes more than 1 argument is implemented by "paritial function". Paritial function means, whatever that function is, 
+there are only two arguments playing with each other.
 
-	A + B + C
-	first add A(B)
-	then add B(C)
-	then add C()
-	--There is only one "+", A+B+C is treated as (A+B) + C
+	ghci> max A B --You see this...max and A and B?
+	ghci> (max A) B --Actually it is like this...only (max A) and B
 
-Becuase of the paritial function, for a function of infinite length, for instance,
+In the other word, every function in Haskell officially only takes one parameter, which is why the declaration of max is like this
 
-	[1,2..]
+	ghci> :t max
+	ghci> max :: Ord a => a -> a -> a
 
-if you are trying to use "fold" on it, foldr is the correct function rather than foldl
+In this case, we can understand the expression in the other way
 
-	foldr (+) [1,2..] 0 --Compiled
-	foldl .. --Error
+	max :: Ord a => a-> (a-> a)
+	--This means, this function takes one pratmeter and returns function
 
+So we can say that, (max A) is a function, and B is the parameter
+
+	(max A) B --max A is the function we created
+
+Now, let's see another example
+
+	multThree :: (Num a) => a -> a -> a -> a
+	multThree x y z = x * y * z
+
+This function actually creates two more function, say, for 3 parameters, 2, 9, 10
+
+	multThree 2 9 10
+	step1: multThree 2
+	step2: multipy 9 with (multThree 2)
+	step3: multipy 10 with (multipy 9 with (mult Three 2))
+
+Remeber a function only takes one argument, and returns a value or function, whatever.
+So, we know a function can return a function, so actually we don't really have to give paramter to a function!
+
+	compareWithHundred :: (Num a, Ord a) => a->a->Ordering
+	compareWithHundred x = compare 100 x
+
+	--This function is totally the same as the following one
+
+	compareWithHundred = compare 100
+
+	--Let me make this clear
+	--Whenever you call compareWithHUndred, it returns compare 100
+	--So, compraeWithHundred x is compare 100 x
+	--The only difference is that this x is not for compareWithHundred, but for compare
+
+Depending on this, we can something more crazy
+
+	divideByTen :: (Floating a) => a->a
+	divideByTen = (/10)
+	ghci> 200 divideByTen
+	20
 
 ## Lambda Expression
 
@@ -479,25 +536,27 @@ A function which can be called without a name is called Lambda Expression
 
 	\x -> x+1
 
-This function takes a number x and returns a value equals to x + 1. To call this function:
+This function takes a number x and returns a value equals to x + 1. The reason we need Lambda Expression is that, we can directly write the body
+of function in the expression. You don't need to write this function elsewhere.
 
 	ghci> (\x->x+1) 5
 	6
 
-Gives a formal meaning to these functions that are defined using currying
+	--You don't need write a function which returns x+1 in some other place
+
+Lambda Expression also gives a formal implementation to these functions that take more than 1 arguments
+through partial function
 
 	add x y = x + y
 	add = \x -> (\y -> x + y)
 
-Useful to define functions that return function
+It is useful to use Lambda Expression to define functions that return function, still some paritial function thing
 
 	--Simple way
 	compose f g x = f(g x)
 
 	--Lambda Expression, more nature
 	compose f g = \x -> f(g x)
-
-
 
 # 6.Pattern Matching
 
@@ -540,7 +599,7 @@ The Pattern Matching in tuples
 	addTwo (x,y) (x2,y2) = (x+x2, y+y2)
 	--We want the individual value so specify them
 
-The Pattern Matching in List Comprehension
+The Pattern Matching can be used in List Comprehension
 
 	findSum xs = [a+b | (a,b) <- xs] --We want the individual value of a and b so specify them
 
@@ -567,7 +626,7 @@ The Pattern Matching in List Operation
 
 # 7.Recursion
 
-Recursion can be implemented through Pattern Matching
+The simpest Recursion can be implemented through Pattern Matching
 
 	factorial :: (Integral a) => a -> a
 	factorial 0 = 1 --base case
@@ -584,16 +643,17 @@ What happened?
 	= 3 * 2
 	= 6
 
-Implementation of quick sort
+You should know, haskell is the best language to write a qsort. It is very simple, much easier than in any other language.
 
 	qsort :: (Num a) => [a] -> [a]
 	qsort x:xs = qsort[a | a <- xs, a <= x]
 					++ x ++
 					qsort[b | b <- xs, b > x]
 					
-	--Try implement this using C++
+	--Try implement this using C++ and you will love Haskell for a little while
 
-Implementation of function sum
+Now use recursion to implement a function which sums up every single value. Here we mentioned the foldr, you are not required to understand
+it so far. But we will get back to this in later chapter!
 
 	sum[] = 0
 	sum(x:xs) = x + sum xs
@@ -617,7 +677,8 @@ Implementation of function and
 	--Using foldr
 	and = foldr(&&)True
 
-Implementation of foldr
+Implementation of foldr, I know it is hard to understand. You just need to know that there is a function called foldr
+and it is being used damn frequently.
 
 	foldr::(a->b->b) ->b ->[a] ->b
 
@@ -625,47 +686,50 @@ Implementation of foldr
 	foldr (?) v[] = v
 	foldr (?) v(x:xs) = x ? foldr (?) v xs
 
-Principle of Recursion is to change the operation ":" to another operation, For instance
+Although you don't really understand foldr, you still need to know the principle of Recursion is to change the operation ":" to 
+another operation, For instance
 
 	sum[123]
 	=foldr(+)0 [1:(2:(3:[]))]
 	=1 + foldr(+)0(2:(3:[]))
 	=1 + (2 + foldr(+)0(3:[]))
 	=1 + (2 +(3 + foldr(+)0[]))
+	--":" becomes "+"
+
+![alt text](image-1.png)
 
 More Complex Recursion function, a function that sums up the square of the positive numbers in a list
 
 	f :: [Int] -> Int
 	f[] = 0
-	f(x:xs) | x>0 = (x*x) + f xs --if x > 0 then return...
+	f(x:xs) | x>0 = (x*x) + f xs --if x > 0 then sums up the square.
 			| otherwise = f xs
 
-Brainstorm: What's the meaning of this function?
+Back to the foldr, we now know it change the operation into another operation. How about using ":" instead of "+" ?
 
 	foldr(:) [] xs
-	--No change, just return the exact xs
+	--No change, it replaces ":" with ":". Hence Nothing is being replaced
 
-Tail Recursive & Non-Tail Recursive
+Tail Recursive & Non-Tail Recursive. The difference is whether you are using the return value of the recursion function
+or you are using a value you sumed up all on yourself.
 
 	factorial (n, acc) --Tail recursive
-	factorial (1), acc = 1 * 2 * 3
+	factorial (1), acc = 1 * 2 * 3 --return acc
 	factorial (2), acc = 1 * 2
 	factorial (3), acc = 1
 
 	factorial (1) = 1 --Non-tail recursive
 	factorial (2) = 2 * factorial (1)
-	factorial (3) = 3 * factorial (2)
-
-![alt text](image-1.png)
+	factorial (3) = 3 * factorial (2) --Return factorial(3)
 
 # 8.Higher-Order Function
 
-Function that takes another function as parameter, for instance, function map 
+Function that takes another function as parameter, for instance, function map takes a function and functions this function on every single elements inside one list
 
 	ghci> map(+1)[1,3,5,7]
 	[2,4,6,8]
 
-Implementation of function map
+We can see the Implementation of function map, there are many ways to do it
 
 	map :: (a->b) ->[a] ->[b]
 	--(a->b) stands for taking a function
@@ -677,16 +741,16 @@ Implementation of function map
 	map f[] = [] //base case
 	map f(x:xs) = f x:map f xs --general case
 
-	--Recursion with Lambda expression
+	--Tail Recursion with Lambda expression
 	map f = foldr(\x acc -> f x : acc) []
 
-Function filter
+Function filter, quite similiar to map, it filters a list depending the boolean value which is returned from the function took from input.
 
 	filter::(a->Bool) -> [a] -> [a]
 	ghci> filter even [1..10]
 	[2,4,6,8,10]
 
-Implementation of function filter
+Implementation of function filter, still a lot of ways to do it.
 
 	--List comprehension method
 	filter p xs = [x|x<-xs, p x]
@@ -697,13 +761,22 @@ Implementation of function filter
 	|p x = x:filter p xs
 	|otherwise = filter p xs
 
-Combined with recursion
+Combined with recursion, this is a function sums up the square of the positive value inside a list
 
 	f :: [Int] -> Int
 	f xs = foldr(+)0 (map sqr (filter pos xs))
 			where
 				sqr x = x*x
 				pos x = x>0
+
+Recursion and Higher order function, that is great, we can combine them to do something more useful. We can implent the function zipWith like this...
+
+	zipWith' (a->b->b) ->[a] ->[b] ->[b]
+	zipWith' _ [] _ =[]
+	zipWith' _ _ [] = []
+	zipWith' f x:xs y:ys = f x y : zipWith' xs ys
+
+	--Use recursion to spilt every two value, functions these two value, pushs them to the return list, and functions next two values...
 
 More complex example, find the largest number under 100,000 that's divisible by 3829
 
@@ -712,11 +785,54 @@ More complex example, find the largest number under 100,000 that's divisible by 
 		where
 			p x = x `mod` 3829 == 0
 
-Implementation of foldr
+	--You know how to use Lambda Expression instead of where
 
-	foldr :: (a->b->b) -> b -> [a] ->b
-	foldr f [x] = x
-	foldr f [x:xs] = f x (foldrl f xs)
+Let's introduce another useful function called takeWhile, this function will take a list until reaching a breakpoint, for example...
+
+	ghci> takeWhile (<10) [1..]
+	[1,2,3,4,5,6,7,8,9]
+
+And we can use it to operate a list with a strict in range
+
+	ghci> sum (takeWhile (<10000) (filter odd (map (^2) [1..])))
+	166650
+
+	--Just remeber this function, it will not be used too frequently
+
+
+## Fold
+
+Fold is a very important idea based on Higher Order Function and Recursion, which is one of the most intriguing thing in Haskell. There are functions
+related to Fold, foldl and foldr. First let's see an example of foldl
+
+	sum' :: (Num a) => [a] -> a
+	sum' xs = foldl (\acc x -> acc + x) 0 xs
+
+	--foldl takes a Lambda Expression, a value and a list
+
+The Lambda Expression tells the function that the way we accumulate the value is through "+", not "-" or something else. The value tells the function that 
+the base case is returning a 0. The list is the list we input as the parameter. We can see an example
+
+	--How does (\acc x -> acc + x) works?
+	ghci> sum' [3,5,2,1]
+	11
+![alt text](image-2.png)
+
+See the picture, you will find that acc is the place where we store our value. It tells every circle of recursion what we have, and then every recursion
+will operate this acc depending on the Lambda Expression. The acc is first 0,then 3, then 8 and so on. And the reason why acc is before the x, is that, 
+in this case, we start folding the list from left(you can see it on the picture), so acc should be always at the left of the value to be added up.
+
+	foldl (+) 0 xs
+	--We can simpily this function like this
+
+To build a deeper understanding on foldl, we can see another example. 
+
+	elem' Eq a -> a -> [a] -> Bool
+	elem' y ys = foldl (\acc x = if x == y then True else acc) False ys
+
+	--This function means, firstly we are False, and then we compare with first element, if not equal then keep false and try next one.
+	--When we get out of the iteration, if we are still false, that means no this element. And if we ever get True, the True will be kept too.
+
 
 # 9.User-Defind Data type
 
@@ -846,4 +962,5 @@ Try using the tree
 	t :: Tree Int
 	t = Node (leaf 2) 1 (leaf 3)
 	--A little tree with only 3 elements
+
 
