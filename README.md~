@@ -919,18 +919,14 @@ Now, a simple challenge! Try write this function using function composition sum 
 
 This is useless though, just a little task to pratice your understanding on the dot. The technique we use the dot is called Function Composition.
 
-### A word
 
-We can consider both Function Composition and Function application as "a way to replace the parenthesis". But keep in mind that, $ is for arguments and . is for functions.
+# 9.User-Defind Data type
 
+Learn how to define a data type
 
-# 9.User-Defined Data type
+## Redefinition of existed data type
 
-The next chapter we will learn is User-Defined Data type, which could be the most annoying! In Haskell there are two differernt style to define your own data type. One is more like the struct and another one is more like to build a Class.
-
-## Using type
-
-keyword "type" can be used to Rename an existed data type. By following code we are able to use String to replace [Char]. 
+Rename an existed data type
 
 	type String = [Char]
 
@@ -948,19 +944,28 @@ keyword "type" can be used to simpilify a data type, for instance, a tuple of in
 	copy:: a -> Pair a
 	copy x = (x,x)
 
-## Using data
+## Define completely new data type
 
-keyword "data" is more widely-used! We can use this to define every single data type inside the standard library. Looking at the code below, we are saying that a data type Bool can be either False of True. "False" and "True" are so called constructor which will be discussed further.
+keyword "data" is used to implement Data Declarations, which can specify the values of a new data type
 
 	data Bool = False | True
 	--Bool is a new type with value False or True
 
-Keep in mind that Type and constructor name must start with a Upper-case letter
+Type and constructor name must start with a Upper-case letter
 
 	data Bool = False | True --compiles
 	data bool = false | true --error
 
-Now we can consider the following example. At the first glance you will find it really weird. But we will explain it step by step. Here we want to build a type called shape, while the shape can be circle or rect or anything else though we only write down the circle and rect. The thing is, we know a Shape class can contains different detail, whatever it is, circle or rect. And they are different in their implementation. Here "Circle" and "Rect" are constructors, it takes his parameter and returns a value. And when we write functions, or may say, his method. We can use pattern matching to implement the polymorphism. I am using the slogan in OOP but it is something like OOP just help you understand!
+Such type can be used in the same way as bulit-in types
+
+	data Answer = Yes | No | Unknown
+
+	flip::Answer -> Answer
+	flip Yes = No
+	flip No = Yes
+	flip Unknown = Unknown
+
+Class hierarchy
 
 	data Shape = Circle Float | Rect Float Float
 	--Shape can be etiher Circle with one parameter or Rect with two parameters
@@ -975,7 +980,6 @@ Now we can consider the following example. At the first glance you will find it 
 
 Circle and Rect can be viwed as the Constructors in modern programming language
 
-    //C++
 	class Circle{
 	private:
 		int r;
@@ -988,15 +992,17 @@ Circle and Rect can be viwed as the Constructors in modern programming language
 		}
 
 	};
-    //polymorphism is not implemented in this code. 
-    //You should use virtual function to implement it.
-    //First write a pure virtual class, say, Shape
-    //Then write concrete class like Circle and Rect which inherits from the shape
-    //Then implement the virtual function written in Shape
 
+	//getCr is the Same as Circle r in haskell
 
+Data declarations can have parameter
 
+	data Maybe a = Nothing | Just a
+	--If there is an input then we can take it, if not then we can leave it empty
 
+	safeHead :: [a] -> Maybe a
+	safeHead[] = Nothing
+	safeHead xs = Just(head xs)
 
 ## Recursive Types
 
