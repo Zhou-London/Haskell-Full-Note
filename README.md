@@ -994,7 +994,17 @@ Circle and Rect can be viwed as the Constructors in modern programming language
     //Then write concrete class like Circle and Rect which inherits from the shape
     //Then implement the virtual function written in Shape
 
+Now we can see an example of using the Constructor
 
+	ghci> area Rect 10 20
+	200
+
+	--Rect 10 20 returns data type "Rect"
+
+As we know constructors are function, it can be used in some higher order function like map
+
+	ghci> map Rect 10 [10,20,30,40,50]
+	[Rect 10 10, Rect 10 20, Rect 10 30, Rect 10 40, Rect 10 50]
 
 
 
@@ -1043,4 +1053,57 @@ Try using the tree
 	t = Node (leaf 2) 1 (leaf 3)
 	--A little tree with only 3 elements
 
+# 10. I/O
+
+This chapter we will go through the Haskell Input/Output. Here is a simple code of Hello World program in haskell. And then save the document as hello.hs
+
+	main = putStrLn "hello world!"
+
+Then we need to compile it, using the command below
+
+	ghc --make hello
+
+Now the hs file is compiled we can then run it
+
+	./hello
+
+Something interesting is the type of this function putStrLn. You will find this when you print out its type. IO stands for input and output. And the parenhesis after IO is because there is not a real value should be returned in the output stream.
+
+	ghci> :t putStrLn
+	String -> IO()
+
+keyword "do" can be used to write multiple sentences and let them be perferomed from top to bottom just like the modern programming language.
+
+	main = do
+		putStrLn "hello, what's your name?"
+		name <- getLine
+		putStrLn $ "Hello " ++ name ++ "you rock!"
+
+Notice this sentence, we are using an operator "<-", which may be little bit unfamiliar. We use this operator because <- doesn't really return a string value. If you use :t on it you will find it return an IO String and the way we fetch data from an IO object is to use "<-"
+
+	name <- getLine
+
+In the same way, we can try to fetch data from an IO(). As it is () but not String or Int so the data we are fetching is empty. For example,
+
+	emp <- putStrLn "Hello"
+
+Things can get even more complex when you realize that main function can call itself like a recursion or loop. The following program will continue get input from user and reverse it and then give it back, until a blank is typed in. Notice the "return" is nothing like the "return" in any other language. "return" in Haskell is a way we avoid interacting with IO as IO is unsecure (You may typed something wrong). And the reason why this program stops at return() is simply because we are not doing the main in else.
+
+	main = do 
+    line <- getLine
+    if null line
+        then return ()
+        else do
+            putStrLn $ reverseWords line
+            main
+
+	reverseWords :: String -> String
+	reverseWords = unwords . map reverse . words
+
+Furthermore, we can say that "return" encapsulates a normal data into the IO and "<-" fetches the normal data from the IO. The following code is totally making sense. But this is not how we use them, you should use a "let" instead, which is more efficient and readable. This is just an example.
+
+	main = do
+		a <- return "hell"
+		b <- return "yeah!"
+		putStrLn $ a ++ " " ++ b
 
